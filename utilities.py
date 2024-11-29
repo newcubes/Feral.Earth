@@ -44,20 +44,3 @@ def Rise_Set_Delta():
 
     return mtsr, mtss
 
-def breezometer_api_request(LAT, LON):
-    """
-    Fetches tree pollen index from Breezometer API for the specified latitude and longitude.
-    """
-    URL_BREEZOMETER2 = "https://api.breezometer.com/pollen/v2/forecast/daily?"
-    Number_of_Days = 1
-    URL_BREEZOMETER2 += f"lat={LAT}&lon={LON}&key={BREEZOMETER_API_KEY}&days={Number_of_Days}"
-
-    response = requests.get(URL_BREEZOMETER2)
-    if response.status_code == 200:
-        json_data = response.json()
-        data = json_data['data'][0]
-        tree_pollen_index = data['types']['tree']['index']['value']
-        return tree_pollen_index
-    else:
-        print(f"Error: Unable to fetch pollen data (Status code: {response.status_code})")
-        return None
