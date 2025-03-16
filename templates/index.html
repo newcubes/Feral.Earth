@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>AWX</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<style>
+  .couponcode:hover .coupontooltip {
+    display: block;
+    font-size: 1.3em;
+    mix-blend-mode: difference;
+    text-align: center;
+  vertical-align: middle;
+    color: #000000d;
+
+  }
+
+  .coupontooltip {
+    display: none;
+    /*background: #FF0FFF;*/
+    /*margin-left: 28px;*/
+    padding: 10px;
+    position: absolute;
+    z-index: 1000;
+    width: 90%;
+    height: 80%;
+    /*border: 1px solid;*/
+
+  }
+
+  .box {
+    border: 1px solid;
+    border-right: none;
+    border-bottom: none;
+
+  }
+
+  .rect {
+    width: 100%;
+    height: 25.5vh;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .col-md-2 {
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    style="width: 12.499999995%;
+
+    /*width: 12.499999995%;
+  flex: 0 0 12.499%;
+  max-width: 12.499%;*/
+    height: 100%;
+  }
+
+  .col-md-3 {
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  h3 {
+    padding-left: 10px;
+  }
+
+  p {
+    padding-left: 10px;
+  }
+
+  h1 {
+    margin-bottom: -3px;
+  }
+
+  .tooltip-wrap {
+    position: relative;
+  }
+
+  .tooltip-wrap .tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    right: 5%;
+    background-color: #fff;
+    padding: .5em;
+  }
+
+  .tooltip-wrap:hover .tooltip-content {
+    display: block;
+  }
+
+  .dot {
+    height: 300px;
+    width: 100%;
+    background-color: white;
+    border-radius: 50%;
+    /*display: inline-block;*/
+  }
+
+  .season {
+    text-align: center;
+    font-size: 35px;
+  }
+
+  #ellipse{
+     height: 11.5em;
+     width: 11.5em;
+     align-self: center;
+     /*position: absolute;
+     top:50%;
+     left:50%;
+     transform: translate(-50%, -130%);*/
+     background-color: yellow;
+     border-radius: 50%
+   }
+
+  #nocturn_diurn {
+    background: linear-gradient(25deg, #1E0958 0%, rgba(30, 9, 88, 0.9) 10.49%, rgba(156, 255, 249, 0.79) 64.1%, #FDFF92 100%);
+    clip-path: polygon(0 0, 100% 0%, 100% 94%, 0% 100%);
+  }
+
+  #radiation {
+    /*background: linear-gradient(180.05deg, #FF0000 -96.19%, rgba(196, 196, 196, 0) 200.96%);
+    clip-path: polygon(0 0, 100% 0%, 100% 100%, 0% 100%);*/
+    height: 8em;
+    width: 8em;
+    align-self: center;
+    background-color: yellow;
+    border-radius: 50%;
+    -webkit-filter: blur(10px);
+  }
+
+  #moon {
+    background: linear-gradient(90deg, #C4C4C4 -45.2%, rgba(196, 196, 196, 0) 116.67%, rgba(196, 196, 196, 0.332624) 116.67%);
+  }
+
+  #gust {
+    background: repeating-linear-gradient(45deg, white, black .0001%);
+  }
+
+  #home {
+    background: rgba(29, 204, 134, 0);
+  }
+
+  #hum {
+    background: conic-gradient(from 141.07deg at 50% 50%, rgba(0, 163, 255, 0.79) -95.22deg, rgba(29, 78, 204, 0.73) 83.16deg, rgba(0, 163, 255, 0.79) 264.78deg, rgba(29, 78, 204, 0.73) 443.16deg);
+  }
+
+  #mtsr {
+    background: linear-gradient(90deg, #C4C4C4 -45.2%, rgba(196, 196, 196, 0) 116.67%, rgba(196, 196, 196, 0.332624) 116.67%);
+  }
+
+  #mtss {
+    background: linear-gradient(360deg, rgba(255, 0, 61, .78) 0%, rgba(255, 255, 255, 0) 100%);
+    /*background: rgba(255, 85, 31, 0.99);*/
+  }
+
+  #pollen {
+    background: linear-gradient(42.45deg, #F9DB55 5.16%, rgba(105, 255, 92, 0.708333) 98.09%, #0075FF 175.1%);
+    ;
+  }
+
+  #humid {
+    background: repeating-linear-gradient( 90deg, #0094FF, #0094FF 3px, #FFFFFF 3px, #FFFFFF 6px);
+    -webkit-filter: blur(10px);
+  }
+
+  #tide {
+    background: rgba(0, 163, 255, 1);
+    clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0% 100%);
+  }
+
+
+  #wind{
+border: 2px solid;
+border-color: red;
+transform: rotate(45deg);
+  }
+
+  #rain{
+    background: radial-gradient(100% 100% at 0% 100%, rgba(1, 194, 255, 0) 0%, rgba(109, 159, 255, 0) 90%, #B8FFFB 100%);
+  }
+
+  #yes{
+    width: 50%;
+    height: 75%;
+    position: absolute;
+    top: 0pt;
+    left: 0pt;
+  }
+  #no{
+    width: 75%;
+    height: 75%;
+  }
+
+
+
+  .container-fluid {
+    margin-left: 0px;
+  }
+
+</style>
+
+<body onload="JavaScript:AutoRefresh(100000);">
+  <marquee width="100%" direction="right" height="auto">
+    <h1>
+Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web Feral Web
+</h1>
+  </marquee>
+  <div class="container-fluid">
+    <div class="row">
+
+
+
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN AWS IS AT SERVER SITE</span>
+        <div class="rect" id="home" style="display: flex; justify-content: center; align-items: center;">
+          <div id="yes">
+            <svg width="226" height="191" viewBox="0 0 226 191" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M46.1336 37.087L38.5695 0.897704L38.4864 0.5H38.0801H2H1.38112L1.51116 1.10507L26.1438 115.713V189V189.5H26.6438H59.4347H59.9347V189V115.714L85.0728 1.10712L85.206 0.5H84.5845H54.4249H54.0212L53.9362 0.894628L46.1336 37.087ZM92.9846 0.5H92.4846V1V189V189.5H92.9846H153H153.5V189V134.495V133.995H153H124.96V117.219H151.128H151.628V116.719V70.5729V70.0729H151.128H124.96V55.6515H151.229H151.729V55.1515V1V0.5H151.229H92.9846Z" stroke="black"/>
+            <mask id="path-2-outside-1" maskUnits="userSpaceOnUse" x="163" y="1" width="63" height="190" fill="black">
+            <rect fill="white" x="163" y="1" width="63" height="190"/>
+            <path d="M193.048 190C178.556 190 168.938 185.862 164.194 177.586V126.364C164.323 126.439 164.791 126.774 165.598 127.371C166.437 127.967 167.486 128.713 168.744 129.607C171.681 131.695 174.764 133.671 177.991 135.535C181.251 137.324 183.865 138.219 185.834 138.219C189.062 138.219 190.675 135.945 190.675 131.397C190.675 127.893 189.288 124.165 186.512 120.213C185.253 118.424 183.817 116.56 182.203 114.621C180.622 112.683 179.008 110.52 177.362 108.134C173.328 102.393 170.084 95.6831 167.631 88.0036C165.21 80.324 164 70.6314 164 58.9256C164 33.352 169.842 16.1662 181.525 7.36823C186.27 3.78941 191.74 2 197.937 2C204.166 2 210.67 3.64029 217.448 6.92088C218.835 7.59191 219.755 8.07654 220.207 8.37478V59.7085C211.428 55.3841 205.119 53.2219 201.278 53.2219C199.793 53.2219 198.68 53.8184 197.937 55.0113C197.195 56.2042 196.824 57.5463 196.824 59.0375C196.824 60.5287 197.147 62.0944 197.792 63.7347C198.438 65.3004 199.551 66.9034 201.133 68.5437C202.714 70.1095 204.554 72.048 206.652 74.3593C208.782 76.5961 210.767 79.0192 212.606 81.6288C220.869 93.3345 225 109.327 225 129.607C225 148.844 222.192 163.718 216.576 174.231C210.896 184.669 203.053 189.925 193.048 190Z"/>
+            </mask>
+            <path d="M193.048 190V191L193.055 191L193.048 190ZM164.194 177.586H163.194V177.852L163.326 178.083L164.194 177.586ZM164.194 126.364L164.694 125.498L163.194 124.632V126.364H164.194ZM165.598 127.371L165.003 128.175L165.011 128.18L165.018 128.186L165.598 127.371ZM168.744 129.607L169.324 128.792L169.324 128.792L168.744 129.607ZM177.991 135.535L177.491 136.401L177.501 136.406L177.51 136.411L177.991 135.535ZM186.512 120.213L187.33 119.638L187.33 119.638L186.512 120.213ZM182.203 114.621L181.428 115.253L181.435 115.261L182.203 114.621ZM177.362 108.134L178.185 107.567L178.18 107.559L177.362 108.134ZM167.631 88.0036L166.677 88.3042L166.678 88.3078L167.631 88.0036ZM181.525 7.36823L182.127 8.16708L182.128 8.16658L181.525 7.36823ZM217.448 6.92088L217.012 7.82099L217.012 7.82117L217.448 6.92088ZM220.207 8.37478H221.207V7.83663L220.758 7.54018L220.207 8.37478ZM220.207 59.7085L219.765 60.6056L221.207 61.3158V59.7085H220.207ZM197.792 63.7347L196.862 64.1009L196.864 64.1084L196.868 64.1158L197.792 63.7347ZM201.133 68.5437L200.413 69.2378L200.421 69.2462L200.429 69.2544L201.133 68.5437ZM206.652 74.3593L205.911 75.0314L205.919 75.0403L205.927 75.049L206.652 74.3593ZM212.606 81.6288L211.789 82.205L211.789 82.2055L212.606 81.6288ZM216.576 174.231L217.455 174.709L217.458 174.702L216.576 174.231ZM193.048 189C178.713 189 169.546 184.912 165.061 177.089L163.326 178.083C168.33 186.812 178.399 191 193.048 191V189ZM165.194 177.586V126.364H163.194V177.586H165.194ZM163.694 127.23C163.688 127.227 163.713 127.242 163.788 127.293C163.855 127.339 163.944 127.402 164.059 127.484C164.287 127.648 164.601 127.878 165.003 128.175L166.192 126.566C165.416 125.993 164.886 125.609 164.694 125.498L163.694 127.23ZM165.018 128.186C165.438 128.484 165.91 128.819 166.434 129.192C166.959 129.565 167.536 129.975 168.165 130.422L169.324 128.792C168.694 128.345 168.118 127.935 167.593 127.562C167.069 127.189 166.597 126.854 166.177 126.556L165.018 128.186ZM168.165 130.422C171.129 132.529 174.237 134.522 177.491 136.401L178.491 134.669C175.29 132.82 172.234 130.861 169.324 128.792L168.165 130.422ZM177.51 136.411C180.808 138.222 183.605 139.219 185.834 139.219V137.219C184.125 137.219 181.694 136.427 178.472 134.658L177.51 136.411ZM185.834 139.219C187.713 139.219 189.255 138.538 190.281 137.092C191.262 135.709 191.675 133.759 191.675 131.397H189.675C189.675 133.583 189.282 135.043 188.65 135.935C188.062 136.763 187.182 137.219 185.834 137.219V139.219ZM191.675 131.397C191.675 127.622 190.181 123.696 187.33 119.638L185.694 120.788C188.395 124.633 189.675 128.163 189.675 131.397H191.675ZM187.33 119.638C186.053 117.823 184.6 115.938 182.972 113.981L181.435 115.261C183.034 117.182 184.453 119.024 185.694 120.788L187.33 119.638ZM182.978 113.989C181.416 112.074 179.818 109.934 178.185 107.567L176.539 108.702C178.198 111.107 179.827 113.291 181.428 115.253L182.978 113.989ZM178.18 107.559C174.212 101.913 171.01 95.2964 168.584 87.6993L166.678 88.3078C169.158 96.0698 172.443 102.874 176.544 108.709L178.18 107.559ZM168.585 87.7029C166.205 80.1539 165 70.5713 165 58.9256H163C163 70.6914 164.215 80.4942 166.677 88.3042L168.585 87.7029ZM165 58.9256C165 33.4383 170.833 16.6718 182.127 8.16708L180.924 6.56939C168.851 15.6606 163 33.2656 163 58.9256H165ZM182.128 8.16658C186.691 4.72449 191.948 3 197.937 3V1C191.533 1 185.849 2.85433 180.923 6.56989L182.128 8.16658ZM197.937 3C203.987 3 210.342 4.59262 217.012 7.82099L217.883 6.02077C210.998 2.68797 204.346 1 197.937 1V3ZM217.012 7.82117C218.408 8.49595 219.269 8.95346 219.656 9.20937L220.758 7.54018C220.242 7.19963 219.263 6.68787 217.883 6.02059L217.012 7.82117ZM219.207 8.37478V59.7085H221.207V8.37478H219.207ZM220.649 58.8114C216.237 56.6383 212.424 54.9972 209.215 53.8975C206.021 52.803 203.361 52.2219 201.278 52.2219V54.2219C203.035 54.2219 205.451 54.7219 208.567 55.7895C211.667 56.8521 215.398 58.4544 219.765 60.6056L220.649 58.8114ZM201.278 52.2219C199.471 52.2219 198.025 52.9772 197.088 54.483L198.786 55.5396C199.334 54.6596 200.115 54.2219 201.278 54.2219V52.2219ZM197.088 54.483C196.241 55.8443 195.824 57.3715 195.824 59.0375H197.824C197.824 57.7211 198.149 56.5642 198.786 55.5396L197.088 54.483ZM195.824 59.0375C195.824 60.6746 196.178 62.3648 196.862 64.1009L198.723 63.3685C198.115 61.824 197.824 60.3827 197.824 59.0375H195.824ZM196.868 64.1158C197.574 65.8304 198.772 67.5364 200.413 69.2378L201.852 67.8496C200.33 66.2705 199.301 64.7705 198.717 63.3535L196.868 64.1158ZM200.429 69.2544C201.994 70.8037 203.821 72.7285 205.911 75.0314L207.392 73.6872C205.287 71.3675 203.434 69.4152 201.836 67.8331L200.429 69.2544ZM205.927 75.049C208.023 77.2491 209.977 79.6341 211.789 82.205L213.424 81.0526C211.557 78.4043 209.541 75.9431 207.376 73.6697L205.927 75.049ZM211.789 82.2055C219.893 93.6855 224 109.451 224 129.607H226C226 109.204 221.845 92.9835 213.423 81.0521L211.789 82.2055ZM224 129.607C224 148.769 221.199 163.455 215.694 173.76L217.458 174.702C223.185 163.981 226 148.918 226 129.607H224ZM215.698 173.753C210.152 183.943 202.607 188.929 193.04 189L193.055 191C203.499 190.922 211.639 185.395 217.455 174.709L215.698 173.753Z" fill="black" mask="url(#path-2-outside-1)"/>
+            </svg>
+          </div>
+          <!-- <div id="no">
+            <svg width="227" height="194" viewBox="0 0 227 194" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M133.378 20.4346L133.377 20.4367C123.593 33.7105 118.735 52.4976 118.735 76.7333V118.333C118.735 142.744 123.539 161.445 133.219 174.366L133.223 174.371C143.017 187.12 156.164 193.5 172.618 193.5C189.071 193.5 202.166 187.12 211.854 174.369L211.854 174.369C221.643 161.447 226.5 142.745 226.5 118.333V76.7333C226.5 52.675 221.588 33.9772 211.699 20.7038C201.911 7.24627 188.871 0.5 172.618 0.5C156.367 0.5 143.273 7.15533 133.378 20.4346ZM180.814 58.8479L180.814 58.8479L180.819 58.857C182.881 62.2975 183.945 67.5225 183.945 74.6V119.4C183.945 126.658 182.881 131.971 180.819 135.41C178.763 138.84 176.036 140.5 172.618 140.5C169.199 140.5 166.472 138.84 164.416 135.41C162.354 131.971 161.29 126.658 161.29 119.4V74.6C161.29 67.5225 162.354 62.2975 164.416 58.8571L164.421 58.8479C166.483 55.2359 169.211 53.5 172.618 53.5C176.024 53.5 178.752 55.2359 180.814 58.8479ZM97.3761 3.16666H68.4473C67.0317 3.16666 65.883 4.0391 64.9817 5.54296C64.075 7.0558 63.632 8.83697 63.632 10.8667V80.8434L37.5927 9.63386C36.8849 7.54643 35.9576 5.93189 34.7856 4.83495C33.6011 3.72629 32.1871 3.16666 30.5681 3.16666H5.31535C3.89972 3.16666 2.75109 4.0391 1.84975 5.54296C0.943028 7.0558 0.5 8.83697 0.5 10.8667V183.133C0.5 185.163 0.943028 186.944 1.84975 188.457C2.75109 189.961 3.89972 190.833 5.31535 190.833H34.2442C35.6598 190.833 36.8084 189.961 37.7098 188.457C38.6165 186.944 39.0595 185.163 39.0595 183.133V118.813L65.1047 184.382C65.1048 184.382 65.1049 184.383 65.105 184.383C66.7284 188.535 69.0379 190.833 72.1234 190.833H97.3761C98.7918 190.833 99.9404 189.961 100.842 188.457C101.748 186.944 102.191 185.163 102.191 183.133V10.8667C102.191 8.83697 101.748 7.0558 100.842 5.54296C99.9404 4.03911 98.7918 3.16666 97.3761 3.16666Z" stroke="black"/>
+            </svg>
+          </div> -->
+        </div>
+        <h3>
+          Is Austin Home?
+        </h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN GUSTY AT SERVER SITE</span>
+        <div class="rect" id="gust">
+        </div>
+        <h3>
+          GUSTS
+        </h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <a href="http://google.com" id="moon_link">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN WIND BLOWS NORTH AT SERVER SITE</span>
+        <div class="rect" id="wind" style="display: flex; justify-content: center; align-items: center;">
+          <div >
+          <svg width="12" height="126" viewBox="0 0 12 126" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.99999 0L0.226492 10L11.7735 10L5.99999 0ZM7 126L6.99999 9L4.99999 9L5 126L7 126Z" fill="#FF0000"/>
+          </svg>
+        </div>
+        </div>
+      </div>
+    </a>
+        <h3>
+          Wind
+        </h3>
+
+      </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN ORCHIDARIUM HUMIDITY IS ABOVE 90%</span>
+        <div class="rect" id="hum">
+        </div>
+        <h3>Orchids</h3>
+      </div>
+      </div>
+
+
+
+
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 AT LOWEST TIDE INTERVAL AT SERVER SITE</span>
+        <div class="rect" id="tide">
+        </div>
+        <h3>Ebb </h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <!-- <h3>
+          This server breathes and respires with its immediate environment.
+        </h3> -->
+        <h3>
+          Imagine a web whose backend was a bioregion, populated with websites that respired like organisms
+        </h3>
+        <!-- <p>Imagine a web whose backend was a bioregion, populated with websites that respired like organisms.</p> -->
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------------------------- -->
+
+    <div class="row">
+
+
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN MUGGY AT SERVER SITE</span>
+        <div class="rect" id="humid">
+        </div>
+        <h3>
+          Rinse
+        </h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 IN THE 10 MINUTES +/- NAUTICAL SUNSET AT SERVER SITE</span>
+          <div class="rect" style="background: linear-gradient(0deg, rgba(218, 246, 255, 0) 0%, rgba(184, 204, 255, 0.73) 100%);">
+        <div class="rect" id="mtss">
+        </div>
+      </div>
+        <h3>
+          Sunset
+        </h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN RAINING AT SERVER SITE</span>
+        <div class="rect" id="rain">
+        </div>
+        <h3>
+          Rain
+        </h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN DARK AT SERVER SITE</span>
+        <div class="rect" style="display: flex; justify-content: center; align-items: center;">
+          <div id="radiation"></div>
+      </div>
+        <h3>
+  				Radiance
+  			</h3>
+      </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">DIURNAL LINK 🔓's'</span>
+          <div class="rect" id="nocturn_diurn">
+          </div>
+          <h3>
+          Diurnal Cycle
+        </h3>
+        </div>
+      </div>
+
+      <div class="col-md-2 box">
+        <h3>
+          This server breathes and respires with its immediate environment.
+        </h3>
+        <p>
+
+        </p>
+      </div>
+
+</div>
+
+<!-- ---------------------------------------------------------------------- -->
+
+<div class="row">
+
+  <div class="col-md-2 box">
+    <div class="couponcode">
+      <span class="coupontooltip">LINK 🔓 ON FULL MOON AT SURVER SITE</span>
+    <div class="rect" style="background:  #C4C4C4">
+      <div class="dot">
+        <div class="rect" style="background: radial-gradient(64.57% 64.57% at 50.18% 35.43%, #B8FFAC 0%, rgba(253, 255, 253, 0.0104167) 99.99%, rgba(196, 196, 196, 0) 100%);">
+          <div class="rect" id="moon">
+          </div>
+        </div>
+      </div>
+    </div>
+    <h3>
+      Moon Phase
+    </h3>
+  </div>
+  </div>
+
+  <div class="col-md-2 box">
+    <div class="couponcode">
+      <span class="coupontooltip">LINK 🔓 IN WINTER AT SERVER SITE</span>
+    <div class="rect">
+      <h2 class="season" style="vertical-align: center; padding-top:5%">{{ season }}</h2>
+    </div>
+    <h3>
+      Season
+    </h3>
+  </div>
+  </div>
+
+  <div class="col-md-2 box">
+    <div class="couponcode">
+      <span class="coupontooltip">LINK 🔓 WHEN TREE POLLEN IS ABUNDANT AT SERVER SITE </span>
+    <div class="rect" id="pollen">
+    </div>
+    <h3>
+      Oak Pollen
+    </h3>
+  </div>
+  </div>
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 ON SOLSTICE DAYS AT SERVER SITE</span>
+        <div class="rect" style="background:#000000">
+          <div class="rect" id="home">
+          </div>
+        </div>
+        <h3>
+          Solstice
+        </h3>
+      </div>
+      </div>
+
+
+      <div class="col-md-2 box">
+        <div class="couponcode">
+          <span class="coupontooltip">LINK 🔓 WHEN __________</span>
+        <div class="rect" id="gust">
+        </div>
+        <h3>
+          Gusts
+        </h3>
+      </div>
+      </div>
+
+
+
+
+      <div class="col-md-2 box">
+        <h3>
+          Turns out the world always already was an internet, and websites are just kites.
+        </h3>
+      </div>
+
+    </div>
+
+
+
+  </div>
+
+
+<script>
+
+
+
+$(init);
+
+function remap(a,x1,y1,x2,y2){
+
+   old_range = (y1-x1);
+   new_range = (y2-x2);
+
+   var val = (((a-x1)*new_range) / old_range) + x2;
+   return Math.round(val*100)/100;
+
+}
+
+function perc2color(perc,min,max) {
+        var base = (max - min);
+
+        if (base == 0) { perc = 100; }
+        else {
+            perc = (perc - min) / base * 100;
+        }
+        var r, g, b = 0;
+        if (perc < 50) {
+            r = 255;
+            g = Math.round(5.1 * perc);
+        }
+        else {
+            g = 255;
+            r = Math.round(510 - 5.10 * perc);
+        }
+        var h = r * 0x10000 + g * 0x100 + b * 0x1;
+        return '#' + ('000000' + h.toString(16)).slice(-6);
+    }
+
+function AutoRefresh( t ) {
+setTimeout("location.reload(true);", t);
+}
+
+function init() {
+
+// Diurnal / Nocturnal Cycle
+         minuteofday = remap({{ mod }},0,1441,0,360);
+         var diurn_bkgrnd = "linear-gradient(" +  minuteofday  + "deg, #1E0958 0%, rgba(30, 9, 88, 0.9) 10.49%, rgba(156, 255, 249, 0.79) 64.1%, #FDFF92 100%)";
+         $("#nocturn_diurn").css( "background", diurn_bkgrnd );
+        //  console.log("The minute of day is:" {{ mod }});
+    //      console.log("The mapped MOD is:" minuteofday);
+
+  // Solar Radiation
+          solar = remap({{ solarradiation }},0,800,2,12);
+          var solar_bkgrnd = solar+"em";
+          // var solar_bkgrnd = "linear-gradient(180deg, rgba(255, 0, 0," + solar + ") -96.32%, rgba(196, 196, 196, 0) 202.81%)";
+          // $("#radiation").css( "background", solar_bkgrnd );
+          $("#radiation").css("width",solar_bkgrnd);
+          // console.log("The solar intensity is:" {{ solarradiation }});
+  //        console.log("The mapped solar intensity is:" solar);
+
+  // Moon
+          moon = remap({{ moon }},0,360,-40,100);
+          var moon_bkgrnd = "linear-gradient(90deg, #C4C4C4 "+ moon + "%, rgba(196, 196, 196, 0) 116.67%, rgba(196, 196, 196, 0.332624) 116.67%)";
+          $("#moon").css( "background", moon_bkgrnd );
+          // console.log("The lunar phase is:" {{ moon }});
+
+    // Gust
+          gust = remap({{ windspeedmph }},0,20,0,360);
+          var gust_bkgrnd = "repeating-linear-gradient(" + gust + "deg,#FFFFFF,#FFFFFF 10px,#000000 10px,#000000 20px)";
+          $("#gust").css( "background", gust_bkgrnd );
+          // console.log("The wind direction is:" {{ wind }});
+        //  console.log("The mapped wind direction is:" wind);
+
+    // Wind
+          wind = remap({{ winddir }},0,360,0,360);
+          $("#wind").css({'-webkit-transform' : 'rotate('+ wind +'deg)',
+                 '-moz-transform' : 'rotate('+ wind +'deg)',
+                 '-ms-transform' : 'rotate('+ wind +'deg)',
+                 'transform' : 'rotate('+ wind +'deg)'});
+          // console.log("The wind direction is:" {{ wind }});
+          // ,
+          //        '-moz-transform' : 'rotate('+ wind +'deg)',
+          //        '-ms-transform' : 'rotate('+ wind +'deg)',
+          //        'transform' : 'rotate('+ wind +'deg)'
+
+
+
+      // Home
+            home = remap({{ status }},0,1,0,1);
+            var home_bkgrnd = "rgba(29, 204, 134, " + home + ")";
+            $("#home").css( "background", home_bkgrnd );
+            // console.log("The wind direction is:" {{ wind }});
+
+
+      // Orchids Humidity
+              humidity1 = remap({{ humidityin }},0,90,.10,.75);
+              humidity2 = remap({{ humidityin }},0,90,.20,.75);
+              var hum_bkgrnd = "conic-gradient(from 141.07deg at 50% 50%, rgba(0, 163, 255, " + humidity2 + ") -95.22deg, rgba(29, 78, 204, " + humidity1 + ") 83.16deg, rgba(0, 163, 255, " + humidity2 + ") 264.78deg, rgba(29, 78, 204, " + humidity1 + ") 443.16deg)";
+              $("#hum").css( "background", hum_bkgrnd );
+
+      // Sunset
+              sunset = remap({{ mtss }},60,0,0,1.0);
+              // var sunset_bkgrnd = "rgba(255, 85, 31,"+ sunset + ")";
+              var sunset_bkgrnd = "linear-gradient(360deg, rgba(255, 0, 61," + sunset + ") 0%, rgba(255, 255, 255, 0) 100%)";
+
+              $("#mtss").css( "background", sunset_bkgrnd );
+
+
+      // Pollen--- NOW TIDES
+              pollen = remap({{ pollen }},0,2,.5,1.0);
+              var pollen_bkgrnd = "linear-gradient(42.45deg, #F9DB55 5.16%, rgba(105, 255, 92,"+ pollen+") 98.09%, #0075FF 175.1%)";
+              $("#pollen").css( "background", pollen_bkgrnd );
+              // console.log("The solar intensity is:" {{ solarradiation }});
+      //        console.log("The mapped solar intensity is:" solar);
+              //The FTP is working
+
+      // Gust
+              gust = remap({{ windspeedmph }},0,20,0.0001,25);
+              var gust_bkgrnd = "repeating-linear-gradient(45deg, white, black "+gust+"%)"
+              $("#gust").css("background", gust_bkgrnd );
+
+
+      // humid
+              humid = remap({{ humidity }},30,95,0,20);
+              var humid_bkgrnd =  "blur( "+humid+"px)";
+              $("#humid")
+                .css("filter", humid_bkgrnd )
+                .css("-webkit-filter", humid_bkgrnd )
+                .css("webkitFilter", humid_bkgrnd )
+                .css("-o-filter", humid_bkgrnd )
+                .css("-ms-filter", humid_bkgrnd );
+      // Tide
+              tide = remap({{ pollen }},2,0,0,90);
+              var tide_bkgrnd = " polygon(0 "+tide+"%, 100%"+tide+"%, 100% 100%, 0% 100%)";
+              $("#tide").css("clip-path", tide_bkgrnd );
+
+      // Rain
+              rain = remap({{ hourlyrainin }},0,0.4,0,1);
+              var rain_bkgrnd = "background: radial-gradient(100% 100% at 0% 100%, rgba(1, 194, 255, "+rain+") 0%, rgba(109, 159, 255, "+rain+") 90%, #B8FFFB 100%)";
+              $("#rain").css("background",rain_bkgrnd);
+
+
+}
+
+
+
+</script>
+<!-- <script>
+// var moon_switch = document.getElementsbyId('moon')
+if ({{ moon }} < 350) {
+  moon_toggle = "NO";
+  // moon_switch.style.display&('none');
+  $('#moon_link').hide();
+} else {
+  moon_toggle = "YES";
+  $('#moon_link').show();
+}
+
+  console.log(moon_toggle);
+
+</script> -->
+</body>
+</html>
