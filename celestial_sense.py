@@ -18,7 +18,7 @@ class ReadCelestial:
         sun = Sun(self.latitude, self.longitude)
         try:
             sunrise = sun.get_local_sunrise_time()
-            return self.ramp(sunrise, 1)  # 1 hour window
+            return self.ramp([sunrise], 1)  # 1 hour window
         except SunTimeException as e:
             print(f"Error calculating sunrise: {e}")
             return 0
@@ -27,7 +27,7 @@ class ReadCelestial:
         sun = Sun(self.latitude, self.longitude)
         try:
             sunset = sun.get_local_sunset_time()
-            return self.ramp(sunset, 1)  # 1 hour window
+            return self.ramp([sunset], 1)  # 1 hour window
         except SunTimeException as e:
             print(f"Error calculating sunset: {e}")
             return 0
@@ -73,17 +73,20 @@ class ReadCelestial:
             "eclipse": self.sense_eclipse()
         }
 
-
     def ramp(self, event_times, window_hours):
         ts = load.timescale()
         now = ts.now()
 
-        if len(event_times) == 0:
+        if not event_times:
             return 0
 
         future_events = []
         for event_time in event_times:
-            delta_hours = (event_time - now).total_seconds() / 3600
+            if isinstance(event_time, datetime):
+                delta_hours = (event_time - datetime.now()).total_seconds() / 3600
+            else:
+                delta_hours = (event_time - now).total_seconds() / 3600
+
             if delta_hours > 0:
                 future_events.append(delta_hours)
 
