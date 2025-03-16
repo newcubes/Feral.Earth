@@ -5,6 +5,7 @@ import sqlite3
 from datetime import datetime
 import logging
 import time
+import json
 
 # Configure logging
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -88,41 +89,11 @@ def fetch_air_quality_data(global_reader):
     return global_reader.fetch_air_quality_data()
 
 def main():
-    # Initialize sensor readers
     local_reader = ReadLocal()
-    global_reader = ReadGlobal()
-    celestial_reader = ReadCelestial()
-
-    # Initialize logger
-    logger = DataLogger()
-
-    # Collect data
-    local_data = local_reader.read_wireless()
-    presence_data = local_reader.read_presence()
-    weather_data = fetch_weather_data(global_reader)
-    air_quality_data = fetch_air_quality_data(global_reader)
-    sunrise_times = celestial_reader.sense_sunrise(40.7128, -74.0060)  # Example coordinates
-    sunset_times = celestial_reader.sense_sunset(40.7128, -74.0060)
-    moon_phase = celestial_reader.sense_phase()
-    season = celestial_reader.sense_season()
-    eclipse = celestial_reader.sense_eclipse()
-
-    # Prepare data for logging
-    data = {
-        'temperature': local_data.get('temperature'),
-        'humidity': local_data.get('humidity'),
-        'presence': presence_data.get('presence'),
-        'weather': weather_data,
-        'air_quality': air_quality_data,
-        'sunrise': sunrise_times[0] if sunrise_times else None,
-        'sunset': sunset_times[0] if sunset_times else None,
-        'moon_phase': moon_phase,
-        'season': season,
-        'eclipse': eclipse
-    }
-
-    # Log data
-    logger.log_data(data)
+    while True:
+        data = local_reader.get_data()
+        print(json.dumps(data, indent=2))
+        time.sleep(10)  # Run every 10 seconds
 
 if __name__ == "__main__":
     try:
