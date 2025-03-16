@@ -1,10 +1,9 @@
 from skyfield.api import load
 from skyfield.almanac import find_discrete, moon_phases
-from datetime import datetime
+from datetime import datetime, timedelta
 from suntime import Sun, SunTimeException
 from skyfield import almanac, eclipselib
 import json
-import numpy as np
 
 class ReadCelestial:
     def __init__(self):
@@ -18,18 +17,20 @@ class ReadCelestial:
     def sense_sunrise(self):
         sun = Sun(self.latitude, self.longitude)
         try:
-            return sun.get_local_sunrise_time().strftime('%Y-%m-%d %H:%M:%S')
+            sunrise = sun.get_local_sunrise_time()
+            return self.ramp(sunrise, 1)  # 1 hour window
         except SunTimeException as e:
             print(f"Error calculating sunrise: {e}")
-            return "N/A"
+            return 0
 
     def sense_sunset(self):
         sun = Sun(self.latitude, self.longitude)
         try:
-            return sun.get_local_sunset_time().strftime('%Y-%m-%d %H:%M:%S')
+            sunset = sun.get_local_sunset_time()
+            return self.ramp(sunset, 1)  # 1 hour window
         except SunTimeException as e:
             print(f"Error calculating sunset: {e}")
-            return "N/A"
+            return 0
 
     def sense_phase(self):
         ts = load.timescale()
@@ -48,49 +49,19 @@ class ReadCelestial:
         else:
             return 'WINTER'
 
-    def calculate_intensity(self, event_times):
-        ts = load.timescale()
-        now = ts.now()
-        
-        # Handle the case where event_times might be empty
-        if len(event_times) == 0:
-            return 0
-            
-        # Find the next event (closest future event)
-        future_events = []
-        for event_time in event_times:
-            delta_days = event_time - now  # This is already in days
-            if delta_days > 0:
-                future_events.append((delta_days, event_time))
-                
-        if not future_events:
-            return 0
-            
-        # Sort by delta_days to get the closest event
-        future_events.sort()
-        delta_days = future_events[0][0]
-        
-        # Calculate intensity based on days until event
-        if delta_days > 30:
-            return 0
-        elif delta_days <= 5:
-            return 100
-        else:
-            return 100 * (1 - (delta_days - 5) / 25)
-
-    def get_solstice_intensity(self):
+    def sense_solstice(self):
         ts = load.timescale()
         now = ts.now()
         t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         t, _ = almanac.find_discrete(now, t1, almanac.seasons(self.eph))
-        return self.calculate_intensity(t)
+        return self.ramp(t, 28 * 24)  # 4 weeks window in hours
 
-    def get_eclipse_intensity(self):
+    def sense_eclipse(self):
         ts = load.timescale()
         now = ts.now()
         t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         x, _, _ = eclipselib.lunar_eclipses(now, t1, self.eph)
-        return self.calculate_intensity(x)
+        return self.ramp(x, 28 * 24)  # 4 weeks window in hours
 
     def get_data(self):
         return {
@@ -98,9 +69,34 @@ class ReadCelestial:
             "sunset": self.sense_sunset(),
             "moon_phase": self.sense_phase(),
             "season": self.sense_season(),
-            "next_solstice_intensity": self.get_solstice_intensity(),
-            "next_eclipse_intensity": self.get_eclipse_intensity()
+            "solstice": self.sense_solstice(),
+            "eclipse": self.sense_eclipse()
         }
+
+
+    def ramp(self, event_times, window_hours):
+        ts = load.timescale()
+        now = ts.now()
+
+        if len(event_times) == 0:
+            return 0
+
+        future_events = []
+        for event_time in event_times:
+            delta_hours = (event_time - now).total_seconds() / 3600
+            if delta_hours > 0:
+                future_events.append(delta_hours)
+
+        if not future_events:
+            return 0
+
+        delta_hours = min(future_events)
+
+        if abs(delta_hours) > window_hours:
+            return 0
+        else:
+            # Exponential ramp-up
+            return 100 * (1 - (abs(delta_hours) / window_hours) ** 2)
 
 # Example usage
 if __name__ == "__main__":
