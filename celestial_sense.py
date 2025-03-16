@@ -85,7 +85,8 @@ class ReadCelestial:
             if isinstance(event_time, datetime):
                 delta_hours = (event_time - datetime.now()).total_seconds() / 3600
             else:
-                delta_hours = (event_time - now).total_seconds() / 3600
+                delta_days = event_time - now
+                delta_hours = delta_days * 24
 
             if delta_hours > 0:
                 future_events.append(delta_hours)
