@@ -53,8 +53,8 @@ class ReadLocal:
         def arp_scan_thread():
             try:
                 while True:
-                    # Run the arp-scan command to find devices on the network
-                    output = subprocess.check_output("sudo arp-scan -l", shell=True)
+                    # Specify the network interface explicitly
+                    output = subprocess.check_output("sudo arp-scan -I wlan0 -l", shell=True)
                     output = output.decode()
 
                     # Debugging: Print the raw output
