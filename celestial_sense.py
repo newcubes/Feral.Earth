@@ -4,6 +4,7 @@ from datetime import datetime
 from suntime import Sun, SunTimeException
 from skyfield import almanac, eclipselib
 import json
+import numpy as np
 
 class ReadCelestial:
     def __init__(self):
@@ -50,16 +51,32 @@ class ReadCelestial:
     def calculate_intensity(self, event_times):
         ts = load.timescale()
         now = ts.now()
+        
+        # Handle the case where event_times might be empty
+        if len(event_times) == 0:
+            return 0
+            
+        # Find the next event (closest future event)
+        future_events = []
         for event_time in event_times:
-            delta_days = (event_time - now).days
+            delta_days = event_time - now  # This is already in days
             if delta_days > 0:
-                if delta_days > 30:
-                    return 0
-                elif delta_days <= 5:
-                    return 100
-                else:
-                    return 100 * (1 - (delta_days - 5) / 25)
-        return 0
+                future_events.append((delta_days, event_time))
+                
+        if not future_events:
+            return 0
+            
+        # Sort by delta_days to get the closest event
+        future_events.sort()
+        delta_days = future_events[0][0]
+        
+        # Calculate intensity based on days until event
+        if delta_days > 30:
+            return 0
+        elif delta_days <= 5:
+            return 100
+        else:
+            return 100 * (1 - (delta_days - 5) / 25)
 
     def get_solstice_intensity(self):
         ts = load.timescale()
