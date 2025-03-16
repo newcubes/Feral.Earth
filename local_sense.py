@@ -38,6 +38,7 @@ class ReadLocal:
                             })
                         except json.JSONDecodeError:
                             continue  # Ignore lines that cannot be parsed
+                process.terminate()  # Ensure the process is terminated
         except Exception as e:
             print(f"Error running rtl_433: {e}")
 
