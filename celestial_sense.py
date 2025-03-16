@@ -61,7 +61,7 @@ class ReadCelestial:
     def get_solstice(self):
         ts = load.timescale()
         now = ts.now()
-        t1 = ts.utc(2025, 1, 1)
+        t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         t, y = almanac.find_discrete(now, t1, almanac.seasons(self.eph))
         for ti in t:
             delta = ti - now
