@@ -5,6 +5,7 @@ from pytz import timezone
 from suntime import Sun, SunTimeException
 from skyfield import almanac, api, eclipselib
 import json
+import math
 
 class ReadCelestial:
     def __init__(self):
@@ -64,21 +65,35 @@ class ReadCelestial:
         t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         t, y = almanac.find_discrete(now, t1, almanac.seasons(self.eph))
         for ti in t:
-            delta = ti - now
-            if delta > 0:
-                return ti.utc_strftime('%Y-%m-%d')
-        return None
+            delta_days = (ti - now).total_seconds() / (3600 * 24)
+            if delta_days > 0:
+                if delta_days > 30:  # More than 1 month away
+                    return 0
+                elif delta_days <= 5:  # Within 5 days
+                    return 100
+                else:
+                    # Linear ramp-up
+                    intensity = 100 * (1 - (delta_days - 5) / 25)
+                    return intensity
+        return 0
 
     def sense_eclipse(self):
         ts = load.timescale()
         t = ts.now()
-        t1 = ts.utc(2025, 1, 1)
+        t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         x, y, details = eclipselib.lunar_eclipses(t, t1, self.eph)
         for ti in x:
-            eclipse = ti - t
-            if eclipse > 0:
-                return ti.utc_strftime('%Y-%m-%d')
-        return None
+            delta_days = (ti - t).total_seconds() / (3600 * 24)
+            if delta_days > 0:
+                if delta_days > 30:  # More than 1 month away
+                    return 0
+                elif delta_days <= 5:  # Within 5 days
+                    return 100
+                else:
+                    # Linear ramp-up
+                    intensity = 100 * (1 - (delta_days - 5) / 25)
+                    return intensity
+        return 0
 
     def get_data(self):
         """Gather all celestial data and return as a dictionary."""
@@ -87,8 +102,8 @@ class ReadCelestial:
             "sunset": self.sense_sunset().strftime('%Y-%m-%d %H:%M:%S') if self.sense_sunset() else "N/A",
             "moon_phase": self.sense_phase(),
             "season": self.sense_season(),
-            "next_solstice": self.get_solstice(),
-            "next_eclipse": self.sense_eclipse()
+            "next_solstice_intensity": self.get_solstice(),
+            "next_eclipse_intensity": self.sense_eclipse()
         }
         return data
 
