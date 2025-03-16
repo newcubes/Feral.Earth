@@ -57,8 +57,12 @@ class ReadLocal:
                     output = subprocess.check_output("sudo arp-scan -l", shell=True)
                     output = output.decode()
 
+                    # Debugging: Print the raw output
+                    print("ARP-scan output:")
+                    print(output)
+
                     # Check if the MAC address is in the output
-                    if self.iphone_mac_address in output:
+                    if self.iphone_mac_address.lower() in output.lower():
                         print("AWX is home")
                     else:
                         print("AWX is not home")
