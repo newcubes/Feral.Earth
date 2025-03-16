@@ -65,7 +65,7 @@ class ReadCelestial:
         t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         t, y = almanac.find_discrete(now, t1, almanac.seasons(self.eph))
         for ti in t:
-            delta_days = (ti - now).days
+            delta_days = (ti - now).tt
             if delta_days > 0:
                 if delta_days > 30:  # More than 1 month away
                     return 0
@@ -83,7 +83,7 @@ class ReadCelestial:
         t1 = ts.utc(now.utc_datetime().year + 1, 1, 1)
         x, y, details = eclipselib.lunar_eclipses(t, t1, self.eph)
         for ti in x:
-            delta_days = (ti - t).days
+            delta_days = (ti - t).tt
             if delta_days > 0:
                 if delta_days > 30:  # More than 1 month away
                     return 0
