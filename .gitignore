@@ -35,6 +35,8 @@ share/python-wheels/
 pip-log.txt
 pip-delete-this-directory.txt
 
+Feral_Earth.code-workspace
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
