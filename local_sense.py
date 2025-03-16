@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import time
+import json
 
 class ReadLocal:
     def __init__(self):
@@ -11,15 +12,23 @@ class ReadLocal:
         # Thread to run rtl_433
         def rtl_433_thread():
             try:
+                # Use the full path to rtl_433
+                rtl_433_path = "/home/pi/rtl_433/build/src/rtl_433"  # Replace with the actual path
                 with subprocess.Popen(
-                    ["rtl_433", "-f", "915M", "-M", "level"],
+                    [rtl_433_path, "-f", "915M", "-M", "level", "-M", "report_meta", "-Y", "autolevel", "-F", "json:-"],
                     stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
+                    stderr=subprocess.PIPE,
+                    universal_newlines=True
                 ) as process:
-                    for line in iter(process.stdout.readline, b''):
-                        decoded_line = line.decode('utf-8').strip()
-                        if self.model_name in decoded_line:
-                            print(f"Decoded signal: {decoded_line}")
+                    for line in iter(process.stdout.readline, ''):
+                        try:
+                            data = json.loads(line)
+                            if data.get('model') == "Fineoffset-WH24":
+                                wind_speed = data.get('wind_avg_m_s', 0) * 2.23694  # Convert to MPH
+                                wind_direction = data.get('wind_dir_deg', 0)  # Default to 0 if not found
+                                print(f"Wind Speed: {wind_speed:.2f} MPH, Wind Direction: {wind_direction}°")
+                        except json.JSONDecodeError:
+                            continue  # Ignore lines that cannot be parsed
             except Exception as e:
                 print(f"Error running rtl_433: {e}")
 
