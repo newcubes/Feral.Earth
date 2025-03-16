@@ -13,7 +13,7 @@ class ReadLocal:
         def rtl_433_thread():
             try:
                 # Use the full path to rtl_433
-                rtl_433_path = "/home/pi/rtl_433/build/src/rtl_433"  # Replace with the actual path
+                rtl_433_path = "/home/pi/rtl_433/build/src/rtl_433"  # Ensure this path is correct
                 with subprocess.Popen(
                     [rtl_433_path, "-f", "915M", "-M", "level", "-M", "report_meta", "-Y", "autolevel", "-F", "json:-"],
                     stdout=subprocess.PIPE,
@@ -23,10 +23,8 @@ class ReadLocal:
                     for line in iter(process.stdout.readline, ''):
                         try:
                             data = json.loads(line)
-                            if data.get('model') == "Fineoffset-WH24":
-                                wind_speed = data.get('wind_avg_m_s', 0) * 2.23694  # Convert to MPH
-                                wind_direction = data.get('wind_dir_deg', 0)  # Default to 0 if not found
-                                print(f"Wind Speed: {wind_speed:.2f} MPH, Wind Direction: {wind_direction}°")
+                            # Print all received data
+                            print(json.dumps(data, indent=2))
                         except json.JSONDecodeError:
                             continue  # Ignore lines that cannot be parsed
             except Exception as e:
