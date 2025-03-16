@@ -23,8 +23,25 @@ class ReadLocal:
                     for line in iter(process.stdout.readline, ''):
                         try:
                             data = json.loads(line)
-                            # Print all received data
-                            print(json.dumps(data, indent=2))
+                            # Extract and print relevant ecological data
+                            temperature = data.get('temperature_C', 'N/A')
+                            humidity = data.get('humidity', 'N/A')
+                            wind_direction = data.get('wind_dir_deg', 'N/A')
+                            wind_avg_intensity = data.get('wind_avg_m_s', 'N/A')
+                            wind_max_intensity = data.get('wind_max_m_s', 'N/A')
+                            rain = data.get('rain_mm', 'N/A')
+                            uv = data.get('uv', 'N/A')
+                            uv_index = data.get('uv_index', 'N/A')
+
+                            print(f"Temperature: {temperature} °C")
+                            print(f"Humidity: {humidity} %")
+                            print(f"Wind Direction: {wind_direction} °")
+                            print(f"Wind Average Intensity: {wind_avg_intensity} m/s")
+                            print(f"Wind Max Intensity: {wind_max_intensity} m/s")
+                            print(f"Rain: {rain} mm")
+                            print(f"UV: {uv}")
+                            print(f"UV Index: {uv_index}")
+                            print("-" * 40)  # Separator for readability
                         except json.JSONDecodeError:
                             continue  # Ignore lines that cannot be parsed
             except Exception as e:
