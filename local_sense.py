@@ -5,8 +5,8 @@ import json
 
 class ReadLocal:
     def __init__(self):
-        self.iphone_mac_address = "A8:81:7E:18:0A:80"
-        self.model_name = "YourModelName"  # Replace with your specific model name
+        self.iphone_mac_address = "6E:66:D3:86:C5:E9"
+        self.model_name = "AWX"
 
     def read_wireless(self):
         # Thread to run rtl_433
@@ -31,7 +31,6 @@ class ReadLocal:
                             wind_max_intensity = data.get('wind_max_m_s', 'N/A')
                             rain = data.get('rain_mm', 'N/A')
                             uv = data.get('uv', 'N/A')
-                            uv_index = data.get('uv_index', 'N/A')
 
                             print(f"Temperature: {temperature} °C")
                             print(f"Humidity: {humidity} %")
@@ -40,7 +39,6 @@ class ReadLocal:
                             print(f"Wind Max Intensity: {wind_max_intensity} m/s")
                             print(f"Rain: {rain} mm")
                             print(f"UV: {uv}")
-                            print(f"UV Index: {uv_index}")
                             print("-" * 40)  # Separator for readability
                         except json.JSONDecodeError:
                             continue  # Ignore lines that cannot be parsed
@@ -61,9 +59,9 @@ class ReadLocal:
 
                     # Check if the MAC address is in the output
                     if self.iphone_mac_address in output:
-                        print("iPhone is present")
+                        print("AWX is home")
                     else:
-                        print("iPhone is not present")
+                        print("AWX is not home")
                     time.sleep(60)  # Sleep to avoid continuous scanning
             except subprocess.CalledProcessError as e:
                 print(f"Error scanning network: {e}")
