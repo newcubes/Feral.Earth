@@ -1,6 +1,5 @@
    skyfield
    python-dotenv
-   subprocess
    threading
    time
    json
