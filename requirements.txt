@@ -1,6 +1,5 @@
    skyfield
    python-dotenv
-   threading
    time
    json
    requests
