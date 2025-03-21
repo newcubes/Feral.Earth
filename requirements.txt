@@ -1,4 +1,5 @@
 skyfield
 python-dotenv
 requests
+suntime
    # Add other packages as needed
