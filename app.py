@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 import sqlite3
 
-DB_PATH = 'sense_data.db'
+DB_PATH = 'sensedata.db'
 
 app = Flask(__name__)
 
