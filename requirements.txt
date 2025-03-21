@@ -1,7 +1,4 @@
-   skyfield
-   python-dotenv
-   time
-   json
-   requests
-   os
+skyfield
+python-dotenv
+requests
    # Add other packages as needed
