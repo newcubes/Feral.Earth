@@ -1,0 +1,9 @@
+   skyfield
+   python-dotenv
+   subprocess
+   threading
+   time
+   json
+   requests
+   os
+   # Add other packages as needed
