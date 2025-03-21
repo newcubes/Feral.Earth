@@ -2,29 +2,37 @@ from local_sense import ReadLocal
 from global_sense import ReadGlobal
 from celestial_sense import ReadCelestial
 import sqlite3
-from datetime import datetime
 import logging
-import time
-import json
 
 # Configure logging
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 DB_PATH = 'sensedata.db'
 
-def create_table():
+def table_exists():
+    """Check if the SensorData table exists."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS SensorData (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                local_data TEXT,
-                celestial_data TEXT
-            )
-        ''')
-        conn.commit()
-    print("Database and table created successfully.")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='SensorData';")
+        return cursor.fetchone() is not None
+
+def create_table():
+    """Create the SensorData table if it doesn't exist."""
+    if not table_exists():
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE SensorData (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    local_data TEXT,
+                    celestial_data TEXT
+                )
+            ''')
+            conn.commit()
+        print("Database and table created successfully.")
+    else:
+        print("Table already exists. Skipping creation.")
 
 def insert_data(local_data, celestial_data):
     with sqlite3.connect(DB_PATH) as conn:
@@ -51,14 +59,17 @@ def main():
     local_sense = ReadLocal()
     celestial_sense = ReadCelestial()
 
-    while True:
-        local_data = local_sense.get_data()
-        celestial_data = celestial_sense.get_data()
-        print(f"Local data: {local_data}")
-        print(f"Celestial data: {celestial_data}")
-        insert_data(str(local_data), str(celestial_data))
-        maintain_db_size()
-        time.sleep(60)  # Log data every minute
+    # Fetch data
+    local_data = local_sense.get_data()
+    celestial_data = celestial_sense.get_data()
+    print(f"Local data: {local_data}")
+    print(f"Celestial data: {celestial_data}")
+
+    # Insert data into the database
+    insert_data(str(local_data), str(celestial_data))
+
+    # Maintain database size
+    maintain_db_size()
 
 if __name__ == '__main__':
     try:
